@@ -1,0 +1,31 @@
+{
+  "name": "accman",
+  "version": "1.0.0",
+  "description": "Solve business accounting challenges using our perfect set of managements functionalities.",
+  "main": "index.js",
+  "scripts": {
+    "start": "server.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rana3399/AccMan.git"
+  },
+  "author": "Rana Ahmed",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/rana3399/AccMan/issues"
+  },
+  "homepage": "https://github.com/rana3399/AccMan#readme",
+  "dependencies": {
+    "bcrypt": "^5.0.1",
+    "cors": "^2.8.5",
+    "dotenv": "^16.0.0",
+    "express": "^4.17.3",
+    "jsonwebtoken": "^8.5.1",
+    "pg": "^8.7.3"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.15"
+  }
+}
