@@ -4,8 +4,6 @@ const fs = require("fs");
 
 const usersDb = require("../database/db.json");
 const generateJWT = require("../utils/generateJWT");
-//const router = express.Router();
-
 
 const userApis = () => {
 
@@ -29,7 +27,8 @@ const userApis = () => {
                 password: bcryptPassword,
             };
 
-            usersDb.push(newUser); //  add newUser to usersDb array
+            // const pretty = JSON.stringify(newUser, null, 4)
+            usersDb.push(newUser);
 
             await fs.writeFileSync("./database/db.json", JSON.stringify(usersDb));
 

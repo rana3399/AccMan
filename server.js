@@ -25,6 +25,8 @@ app.post("/user/sign-up", userApis.getSignUp);
 app.post("/user/sign-in", userApis.getSignIn);
 app.post("user/auth", authenticate, userApis.getAuthorization);
 
+app.get("/customers", api.getCustomers)
+
 const PORT = process.env.PORT || 8000;
 app.listen(PORT, () => {
     console.log(`Server up and running on port ${PORT}`);
