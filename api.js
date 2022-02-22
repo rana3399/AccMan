@@ -11,11 +11,9 @@ const api = () => {
         return res
             .status(200)
             .json(result.rows)
-
     }
-
     return {
-        getUsers,
+        getUsers
     }
 }
 
