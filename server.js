@@ -12,6 +12,12 @@ const customersFunc = customersFile();
 const servicesFile = require("./servicesApis");
 const servicesFunc = servicesFile();
 
+const invoicesFile = require("./invoicesApis");
+const invoicesFunc = invoicesFile();
+
+const salesFile = require("./salesApis");
+const salesFunc = salesFile();
+
 const authorizationApiFile = require("./routes/user");
 const authApis = authorizationApiFile();
 
@@ -41,10 +47,15 @@ app.get("/services", servicesFunc.getServices);
 app.get("/services/search", servicesFunc.getServicesByName);
 app.post("/services", servicesFunc.addNewService);
 
+app.post("/invoices", invoicesFunc.addNewInvoice);
+
+app.post("/sales", salesFunc.addNewSale);
 
 
 
-const PORT = process.env.PORT || 8000;
+
+
+const PORT = process.env.PORT || 7000;
 app.listen(PORT, () => {
     console.log(`Server up and running on port ${PORT}`);
 })
