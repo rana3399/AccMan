@@ -9,6 +9,8 @@ const usersApisFile = require("./usersApis.js")
 const usersApis = usersApisFile();
 const customersFile = require("./customersApis.js");
 const customersFunc = customersFile();
+const servicesFile = require("./servicesApis");
+const servicesFunc = servicesFile();
 
 const authorizationApiFile = require("./routes/user");
 const authApis = authorizationApiFile();
@@ -30,7 +32,17 @@ app.post("user/auth", authenticate, authApis.getAuthorization);
 
 app.get("/customers", customersFunc.getCustomers);
 app.get("/customers", customersFunc.getCustomersById);
-app.get("/customers", customersFunc.getCustomersByName);
+app.post("/customers", customersFunc.addNewCustomers);
+app.get("/customers/search", customersFunc.getCustomersByName);
+
+
+
+app.get("/services", servicesFunc.getServices);
+app.get("/services/search", servicesFunc.getServicesByName);
+app.post("/services", servicesFunc.addNewService);
+
+
+
 
 const PORT = process.env.PORT || 8000;
 app.listen(PORT, () => {

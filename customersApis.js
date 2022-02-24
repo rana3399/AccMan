@@ -25,10 +25,7 @@ const customersApis = () => {
     const getCustomersById = async (req, res) => {
         try {
             const reqId = parseInt(req.params.id)
-            console.log(reqId);
-
             const findSearchedCustomer = await pool.query("select * from customers where id = $1", [reqId]);
-            console.log(findSearchedCustomer.rows);
 
             if (findSearchedCustomer.rows.length > 0) {
                 return res
@@ -50,16 +47,14 @@ const customersApis = () => {
     //search customers by name
     const getCustomersByName = async (req, res) => {
         try {
-            const reqbody = req.query.name;
-            console.log(reqbody);
+            const reqbody = `%${req.query.name}%`;
 
-            const searchedCustomerNameQuery = await pool.query(`select * from customers where customer_name LIKE ${reqbody}`);
-            console.log(searchedCustomerNameQuery.rows);
+            const searchedCustomerByNameQuery = await pool.query(`select * from customers where customer_name LIKE $1`, [reqbody]);
 
-            if (searchedCustomerNameQuery.rows.length > 0) {
+            if (searchedCustomerByNameQuery.rows.length > 0) {
                 return res
                     .status(200)
-                    .json(searchedCustomerNameQuery.rows)
+                    .json(searchedCustomerByNameQuery.rows)
             } else {
                 return res
                     .status(404)
@@ -69,6 +64,34 @@ const customersApis = () => {
         } catch (error) {
             console.error(error)
             res.status("404").send(error)
+        }
+    }
+
+    // create a new customer
+    const addNewCustomers = async (request, response) => {
+        try {
+            const newCustomer = request.body;
+            const { customer_email, customer_name, customer_company_name } = newCustomer;
+
+            const result = await pool.query(
+                `INSERT INTO customers (customer_email, customer_name, customer_company_name)
+        VALUES ($1, $2, $3)`,
+                [
+                    customer_email,
+                    customer_name,
+                    customer_company_name,
+                ]);
+
+            console.log(result.rows);
+
+            if (!customer_email || !customer_name || !customer_company_name || !result.rows.length > 0) {
+                return res
+                    .status(404)
+                    .send("There is an error, please try again.")
+            }
+        } catch (error) {
+            console.error(error.message);
+            response.status(404).send({ error: error.message });
 
         }
     }
@@ -78,10 +101,9 @@ const customersApis = () => {
     return {
         getCustomers,
         getCustomersById,
-        getCustomersByName
+        getCustomersByName,
+        addNewCustomers
     }
-
-
 }
 
 module.exports = customersApis;
