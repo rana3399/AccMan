@@ -10,15 +10,21 @@ const router = require('express').Router();
 const addNewSale = async (request, response) => {
     try {
         const newSale = request.body;
-        const { customer_id, service_id, total_price } = newSale;
+        const { customer_id, service_id, service_buying_price, service_selling_price, total_price } = newSale;
 
         const result = await pool.query(
-            `INSERT INTO sales (customer_id, service_id, total_price)
-        VALUES ($1, $2, $3) returning id`,
-            [customer_id, service_id, total_price]);
-
-
-
+            `INSERT INTO sales (customer_id, 
+                service_id, 
+                service_buying_price, 
+                service_selling_price, 
+                total_price)
+        VALUES ($1, $2, $3, $4, $5) returning id`,
+            [customer_id,
+                service_id,
+                service_buying_price,
+                service_selling_price,
+                total_price
+            ]);
 
         if (result.rows.length > 0) {
             return response

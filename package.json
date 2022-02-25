@@ -4,7 +4,7 @@
   "description": "Solve business accounting challenges using our perfect set of managements functionalities.",
   "main": "index.js",
   "scripts": {
-    "start": "server.js",
+    "start": "nodemon server.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {

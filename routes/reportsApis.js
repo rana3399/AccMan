@@ -6,7 +6,7 @@ const pool = new Pool(secrets);
 
 const router = require("express").Router();
 
-//show all invoices
+//show all reports
 const getReports = async (req, res) => {
     try {
         const result = await pool.query("select * from reports")
@@ -23,23 +23,60 @@ const getReports = async (req, res) => {
     } catch (error) {
         console.error(error)
         res.status("404").send(error)
-
     }
 }
 
-const getTotalSalesReport = async (request, response) => {
+// get a sale report 
+const createSaleReportByDate = async (request, response) => {
     try {
+        const { start_date, end_date } = request.body;
 
-        const result = await pool.query(`SELECT SUM (total_price) FROM sales`);
+        if (start_date && end_date) {
+            const saleReportQuery = await pool.query(`SELECT SUM (total_price) FROM sales
+        WHERE sales.sales_date >= $1 
+        AND sales.sales_date <= $2 `, [start_date, end_date]);
 
-        console.log(result.rows);
+            if (saleReportQuery.rows.length > 0) {
+                return response
+                    .status(200)
+                    .json({
+                        status: `Sales report from ${start_date} to ${end_date} is created.`,
+                        totalSale: `Euro: ${saleReportQuery.rows[0].sum}`
+                    })
+            }
 
-        if (result.rows.length > 0) {
+        } else {
+            const result = await pool.query(`SELECT SUM (total_price) FROM sales`);
             return response
                 .status(200)
                 .json({
-                    status: `total sales report created`,
+                    status: `A total sales report is created.`,
                     totalSale: `Euro: ${result.rows[0].sum}`
+                })
+        }
+
+    } catch (error) {
+        console.error(error.message);
+        response.status(404).send({ error: error.message });
+    }
+}
+
+// get report between 2 specific dates
+const createGrossProfitByDate = async (request, response) => {
+    try {
+        const { start_date, end_date } = request.body;
+
+        const grossProfitQuery = await pool.query(`SELECT SUM (total_price - service_buying_price) 
+        FROM sales 
+        WHERE sales.sales_date >= $1 
+        AND sales.sales_date <= $2 `, [start_date, end_date]);
+
+        if (grossProfitQuery.rows.length > 0) {
+            return response
+                .status(200)
+                .json({
+                    status: `A Gross Profit Report is created.`,
+                    GrossProfit: grossProfitQuery.rows[0].sum
                 })
         } else {
             console.log("there is an error")
@@ -50,31 +87,37 @@ const getTotalSalesReport = async (request, response) => {
     }
 }
 
-// const getOverAllReport = async (request, response) => {
-//     try {
+const getNetProfit = async (request, response) => {
+    try {
+        const grossProfitQuery = await pool.query(`SELECT SUM (total_price - service_buying_price) FROM sales`);
+        const grossProfitQueryResult = grossProfitQuery.rows[0].sum;
 
-//         const result = await pool.query(`SELECT SUM (total_price) FROM sales`);
+        const monthlyCostQuery = await pool.query(`SELECT monthly_management_cost from expenses`);
+        const monthlyCostQueryResult = monthlyCostQuery.rows[0].monthly_management_cost;
 
-//         console.log(result.rows);
+        const netProfit = parseInt(grossProfitQueryResult - monthlyCostQueryResult)
+        console.log(netProfit);
 
-//         if (result.rows.length > 0) {
-//             return response
-//                 .status(200)
-//                 .json({
-//                     status: `A Over All Report created`,
-//                     OverAllReport: result.rows[0]
-//                 })
-//         } else {
-//             console.log("there is an error")
-//         }
-//     } catch (error) {
-//         console.error(error.message);
-//         response.status(404).send({ error: error.message });
-//     }
-// }
+        if (grossProfitQuery.rows.length > 0) {
+            return response
+                .status(200)
+                .json({
+                    status: `A Net Profit Report is created.`,
+                    NetProfit: netProfit
+                })
+        } else {
+            console.log("there is an error")
+        }
+    } catch (error) {
+        console.error(error.message);
+        response.status(404).send({ error: error.message });
+    }
+}
 
-router.get("/", getReports)
-router.get("/total-sales", getTotalSalesReport)
+router.get("/", getReports);
+router.get("/net-profit", getNetProfit);
+router.post("/total-sales", createSaleReportByDate);
+router.post("/gross-profit", createGrossProfitByDate);
 
 
 module.exports = router;

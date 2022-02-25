@@ -2,6 +2,7 @@ drop table if exists users;
 drop table if exists customers cascade;
 drop table if exists services cascade;
 drop table if exists sales cascade;
+drop table if exists expenses cascade;
 drop table if exists invoices cascade;
 drop table if exists reports cascade;
 
@@ -24,25 +25,31 @@ CREATE TABLE services (
   id        SERIAL PRIMARY KEY,
   service_name VARCHAR (100) not null,
   descriptions VARCHAR (500),
-  service_buying_price  INT not null,
+  service_buying_price   INT not null,
   service_selling_price INT not null
 );
 
 CREATE TABLE sales (
   id        SERIAL PRIMARY KEY,
+  sales_date      date,
   customer_id INT REFERENCES customers(id),
   service_id  INT REFERENCES services(id),
+  service_buying_price   INT not null,
+  service_selling_price INT not null,
   total_price INT not null
+);
+
+CREATE TABLE expenses (
+  monthly_management_cost INT not null
 );
 
 CREATE TABLE invoices (
   id        SERIAL PRIMARY KEY,
-  invoice_date      date ,
-  customer_id INT REFERENCES customers(id),
-  sales_id INT REFERENCES sales(id),
+  invoice_date      DATE DEFAULT CURRENT_DATE,
+  customer_id INT REFERENCES customers(id) not null,
+  sales_id INT REFERENCES sales(id) not null,
   total_amount INT not null
 );
-
 
 CREATE TABLE reports (
   id        SERIAL PRIMARY KEY,
@@ -63,18 +70,37 @@ INSERT INTO customers (customer_email, customer_name, customer_company_name) VAL
 
 
 INSERT INTO services (service_name, descriptions, service_buying_price, service_selling_price) VALUES ('cleaning', 'Weekly cleaning and some descriptions', 5000, 8000);
-INSERT INTO services (service_name, descriptions, service_buying_price, service_selling_price) VALUES ('audit', 'auditing descriptions', 15000, 28000);
+INSERT INTO services (service_name, descriptions, service_buying_price, service_selling_price) VALUES ('audit', 'auditing descriptions', 10000, 10000);
 INSERT INTO services (service_name, descriptions, service_buying_price, service_selling_price) VALUES ('designing', 'designing descriptions', 32000, 56000);
 
-INSERT INTO sales (customer_id, service_id, total_price) VALUES (1, 2, 15555);
+INSERT INTO sales (sales_date, customer_id, service_id, service_buying_price, service_selling_price, total_price) VALUES ('2021-07-14', 1, 2, 10000, 15000, 15000);
+INSERT INTO sales (sales_date , customer_id, service_id, service_buying_price, service_selling_price, total_price) VALUES ('2022-03-14',3, 1, 2000, 8000, 8000);
+INSERT INTO sales (sales_date, customer_id, service_id, service_buying_price, service_selling_price, total_price) VALUES ('2022-02-26', 2, 2, 35000, 50000, 50000);
 
-INSERT INTO invoices (invoice_date, customer_id, sales_id, total_amount) VALUES ('2022-03-15', 3, 2, 189000);
+INSERT INTO sales (sales_date, customer_id, service_id, service_buying_price, service_selling_price, total_price) VALUES ('2021-02-04', 1, 2, 10000, 55000, 55000);
+INSERT INTO sales (sales_date , customer_id, service_id, service_buying_price, service_selling_price, total_price) VALUES ('2022-03-14',3, 1, 2000, 80000, 80000);
+INSERT INTO sales (sales_date, customer_id, service_id, service_buying_price, service_selling_price, total_price) VALUES ('2022-02-16', 2, 2, 35000, 40000, 40000);
+
+
+INSERT INTO invoices (customer_id, sales_id, total_amount) VALUES (2, 1, 189000);
 
 INSERT INTO reports (from_date, to_date, total_sales, total_cost, gross_profit
 ) VALUES ('2021-03-15', '2022-02-14', 300000, 120000, 180000);
 
+INSERT INTO expenses (monthly_management_cost) VALUES (5000);
+SELECT monthly_management_cost from expenses
+
+
+
 --SELECT SUM (total_price) FROM sales returning id;
 
---select * from sales
+SELECT SUM (total_price - service_buying_price) FROM sales --total gross profit
+SELECT SUM (service_buying_price) FROM sales
 
---select * from customers where customer_name LIKE '%mari%';
+SELECT  sum(sales.total_price) from sales - (SELECT sum(expenses.yearly_salary_cost)
+FROM expenses)
+
+SELECT SUM (total_price - service_buying_price) 
+        FROM sales
+        WHERE sales.sales_date >= '2022-02-01' 
+        AND sales.sales_date <= '2022-02-28'
