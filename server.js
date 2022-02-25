@@ -5,23 +5,24 @@ const bodyParser = require("body-parser");
 app.use(bodyParser.json());
 app.use(express.json());
 
-const usersApisFile = require("./usersApis.js")
-const usersApis = usersApisFile();
+
+
+//const usersApisFile = require("./usersApis.js")
+//const usersApis = usersApisFile();
 const customersFile = require("./customersApis.js");
 const customersFunc = customersFile();
-const servicesFile = require("./servicesApis");
-const servicesFunc = servicesFile();
 
 const invoicesFile = require("./invoicesApis");
 const invoicesFunc = invoicesFile();
 
-const salesFile = require("./salesApis");
-const salesFunc = salesFile();
+const usersRouter = require("./routes/user");
+app.use('/users', usersRouter);
 
-const authorizationApiFile = require("./routes/user");
-const authApis = authorizationApiFile();
+const salesRouter = require("./routes/salesApis");
+app.use('/sales', salesRouter);
 
-const authenticate = require("./middleware/authenticate");
+const servicesRouter = require("./routes/servicesApis");
+app.use('/services', servicesRouter);
 
 
 const cors = require("cors");
@@ -31,27 +32,13 @@ const corsOptions = {
 app.use(cors(corsOptions));
 
 
-app.get("/users", usersApis.getUsers)
-app.post("/user/sign-up", authApis.getSignUp);
-app.post("/user/sign-in", authApis.getSignIn);
-app.post("user/auth", authenticate, authApis.getAuthorization);
-
 app.get("/customers", customersFunc.getCustomers);
 app.get("/customers", customersFunc.getCustomersById);
 app.post("/customers", customersFunc.addNewCustomers);
 app.get("/customers/search", customersFunc.getCustomersByName);
 
 
-
-app.get("/services", servicesFunc.getServices);
-app.get("/services/search", servicesFunc.getServicesByName);
-app.post("/services", servicesFunc.addNewService);
-
 app.post("/invoices", invoicesFunc.addNewInvoice);
-
-app.post("/sales", salesFunc.addNewSale);
-
-
 
 
 
