@@ -40,7 +40,7 @@ CREATE TABLE sales (
 );
 
 CREATE TABLE expenses (
-  monthly_management_cost INT not null
+  management_cost INT not null
 );
 
 CREATE TABLE invoices (
@@ -76,7 +76,6 @@ INSERT INTO services (service_name, descriptions, service_buying_price, service_
 INSERT INTO sales (sales_date, customer_id, service_id, service_buying_price, service_selling_price, total_price) VALUES ('2021-07-14', 1, 2, 10000, 15000, 15000);
 INSERT INTO sales (sales_date , customer_id, service_id, service_buying_price, service_selling_price, total_price) VALUES ('2022-03-14',3, 1, 2000, 8000, 8000);
 INSERT INTO sales (sales_date, customer_id, service_id, service_buying_price, service_selling_price, total_price) VALUES ('2022-02-26', 2, 2, 35000, 50000, 50000);
-
 INSERT INTO sales (sales_date, customer_id, service_id, service_buying_price, service_selling_price, total_price) VALUES ('2021-02-04', 1, 2, 10000, 55000, 55000);
 INSERT INTO sales (sales_date , customer_id, service_id, service_buying_price, service_selling_price, total_price) VALUES ('2022-03-14',3, 1, 2000, 80000, 80000);
 INSERT INTO sales (sales_date, customer_id, service_id, service_buying_price, service_selling_price, total_price) VALUES ('2022-02-16', 2, 2, 35000, 40000, 40000);
@@ -87,20 +86,5 @@ INSERT INTO invoices (customer_id, sales_id, total_amount) VALUES (2, 1, 189000)
 INSERT INTO reports (from_date, to_date, total_sales, total_cost, gross_profit
 ) VALUES ('2021-03-15', '2022-02-14', 300000, 120000, 180000);
 
-INSERT INTO expenses (monthly_management_cost) VALUES (5000);
-SELECT monthly_management_cost from expenses
+INSERT INTO expenses (management_cost) VALUES (5000);
 
-
-
---SELECT SUM (total_price) FROM sales returning id;
-
-SELECT SUM (total_price - service_buying_price) FROM sales --total gross profit
-SELECT SUM (service_buying_price) FROM sales
-
-SELECT  sum(sales.total_price) from sales - (SELECT sum(expenses.yearly_salary_cost)
-FROM expenses)
-
-SELECT SUM (total_price - service_buying_price) 
-        FROM sales
-        WHERE sales.sales_date >= '2022-02-01' 
-        AND sales.sales_date <= '2022-02-28'

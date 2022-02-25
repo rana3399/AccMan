@@ -6,8 +6,6 @@ const pool = new Pool(secrets);
 
 const router = require('express').Router();
 
-
-
 const getServices = async (req, res) => {
     try {
         const result = await pool.query("select * from services")
@@ -22,27 +20,26 @@ const getServices = async (req, res) => {
 }
 
 //search services by name
-// const getServicesByName = async (req, res) => {
-//     try {
-//         const reqbody = `%${req.query.name}%`;
+const getServicesByName = async (req, res) => {
+    try {
+        const reqbody = `%${req.query.name}%`;
+        const searchedCustomerByNameQuery = await pool.query(`select * from services where service_name LIKE $1`, [reqbody]);
 
-//         const searchedCustomerByNameQuery = await pool.query(`select * from services where service_name LIKE $1`, [reqbody]);
+        if (searchedCustomerByNameQuery.rows.length > 0) {
+            return res
+                .status(200)
+                .json(searchedCustomerByNameQuery.rows)
+        } else {
+            return res
+                .status(404)
+                .send("Service name doesn't exists!")
+        }
 
-//         if (searchedCustomerByNameQuery.rows.length > 0) {
-//             return res
-//                 .status(200)
-//                 .json(searchedCustomerByNameQuery.rows)
-//         } else {
-//             return res
-//                 .status(404)
-//                 .send("Service name doesn't exists!")
-//         }
-
-//     } catch (error) {
-//         console.error(error)
-//         res.status("404").send(error)
-//     }
-// }
+    } catch (error) {
+        console.error(error)
+        res.status("404").send(error)
+    }
+}
 
 // create a new service
 const addNewService = async (request, response) => {
@@ -79,10 +76,8 @@ const addNewService = async (request, response) => {
     }
 }
 
-
 router.get("/", getServices);
-//router.get("/search", getServicesByName);
+router.get("/search", getServicesByName);
 router.post("/", addNewService);
-
 
 module.exports = router;

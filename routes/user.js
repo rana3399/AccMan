@@ -113,7 +113,7 @@ const getUsers = async (req, res) => {
     }
 }
 
-//router.get("/", getUsers)
+router.get("/", getUsers)
 router.post("/sign-up", getSignUp);
 router.post("/sign-in", getSignIn);
 router.post("/auth", authenticate, getAuthorization);
