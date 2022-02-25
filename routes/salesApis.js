@@ -17,6 +17,9 @@ const addNewSale = async (request, response) => {
         VALUES ($1, $2, $3) returning id`,
             [customer_id, service_id, total_price]);
 
+
+
+
         if (result.rows.length > 0) {
             return response
                 .status(200)

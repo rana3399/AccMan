@@ -3,6 +3,7 @@ drop table if exists customers cascade;
 drop table if exists services cascade;
 drop table if exists sales cascade;
 drop table if exists invoices cascade;
+drop table if exists reports cascade;
 
 
 CREATE TABLE users (
@@ -43,14 +44,15 @@ CREATE TABLE invoices (
 );
 
 
-
--- -- CREATE TABLE reports (
--- --   id        SERIAL PRIMARY KEY,
--- --   service_name VARCHAR (100) not null,
--- --   descriptions VARCHAR (500),
--- --   service_buying_price  INT not null,
--- --   service_selling_price INT not null
--- -- );
+CREATE TABLE reports (
+  id        SERIAL PRIMARY KEY,
+  delivery_date DATE DEFAULT CURRENT_DATE,
+  from_date      date,
+  to_date      date,
+  total_sales  INT,
+  total_cost  INT,
+  gross_profit  INT
+);
 
 INSERT INTO users (user_email, user_name) VALUES ('rana@gmail.com', 'Rana');
 INSERT INTO users (user_email, user_name) VALUES ('Cristine@gmail.com', 'Cristine');
@@ -66,6 +68,13 @@ INSERT INTO services (service_name, descriptions, service_buying_price, service_
 
 INSERT INTO sales (customer_id, service_id, total_price) VALUES (1, 2, 15555);
 
---select * from users
+INSERT INTO invoices (invoice_date, customer_id, sales_id, total_amount) VALUES ('2022-03-15', 3, 2, 189000);
+
+INSERT INTO reports (from_date, to_date, total_sales, total_cost, gross_profit
+) VALUES ('2021-03-15', '2022-02-14', 300000, 120000, 180000);
+
+--SELECT SUM (total_price) FROM sales returning id;
+
+--select * from sales
 
 --select * from customers where customer_name LIKE '%mari%';
