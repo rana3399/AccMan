@@ -19,6 +19,14 @@ const createSaleReportByDate = async (request, response) => {
         const saleReportResult = start_date && end_date ? await pool.query(queryByDate, [start_date, end_date]
         ) : await pool.query(randonQuery)
 
+        if (start_date > end_date) {
+            return response
+                .status(400)
+                .json({
+                    status: `Please check your dates.`,
+                })
+        }
+
         console.log(saleReportResult.rows);
 
         if (start_date && end_date) {
@@ -56,6 +64,14 @@ const createGrossProfitByDate = async (request, response) => {
         ) : await pool.query(randonQuery)
 
         console.log(grossProfitQuery.rows);
+
+        if (start_date > end_date) {
+            return response
+                .status(400)
+                .json({
+                    status: `Please check your dates.`,
+                })
+        }
 
         if (start_date && end_date && grossProfitQuery.rows.length > 0) {
             return response

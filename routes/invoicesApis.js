@@ -56,10 +56,6 @@ const addNewInvoice = async (request, response) => {
     }
 }
 
-
-
-
-
 router.post("/", addNewInvoice)
 router.get("/", getInvoices)
 

@@ -31,7 +31,7 @@ CREATE TABLE services (
 
 CREATE TABLE sales (
   id        SERIAL PRIMARY KEY,
-  sales_date      date,
+  sales_date  TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
   customer_id INT REFERENCES customers(id),
   service_id  INT REFERENCES services(id),
   service_buying_price   INT not null,
@@ -45,7 +45,7 @@ CREATE TABLE expenses (
 
 CREATE TABLE invoices (
   id        SERIAL PRIMARY KEY,
-  invoice_date      DATE DEFAULT CURRENT_DATE,
+  invoice_date      TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
   customer_id INT REFERENCES customers(id) not null,
   sales_id INT REFERENCES sales(id) not null,
   total_amount INT not null
@@ -53,7 +53,7 @@ CREATE TABLE invoices (
 
 CREATE TABLE reports (
   id        SERIAL PRIMARY KEY,
-  delivery_date DATE DEFAULT CURRENT_DATE,
+  delivery_date TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
   from_date      date,
   to_date      date,
   total_sales  INT,
