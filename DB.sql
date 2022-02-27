@@ -85,9 +85,9 @@ INSERT INTO sales (sales_date, customer_id, service_id, service_buying_price, se
 INSERT INTO sales (sales_date , customer_id, service_id, service_buying_price, service_selling_price, total_price) VALUES ('2022-03-14',3, 1, 2000, 80000, 80000);
 INSERT INTO sales (sales_date, customer_id, service_id, service_buying_price, service_selling_price, total_price) VALUES ('2022-02-16', 2, 2, 35000, 40000, 40000);
 
-INSERT INTO expenses (from_date, to_date, salary, management_cost) VALUES ('2021-01-01', '2021-01-31', 32000, 5000);
-INSERT INTO expenses (from_date, to_date, salary, management_cost) VALUES ('2021-02-01', '2021-02-28', 55000, 4000);
-INSERT INTO expenses (from_date, to_date, salary, management_cost) VALUES ('2022-03-01', '2022-03-31', 12000, 8000);
+INSERT INTO expenses (from_date, to_date, salary, management_cost) VALUES ('2021-01-01', '2021-01-31', 2000, 3000);
+INSERT INTO expenses (from_date, to_date, salary, management_cost) VALUES ('2021-02-01', '2021-02-28', 5000, 2500);
+INSERT INTO expenses (from_date, to_date, salary, management_cost) VALUES ('2022-03-01', '2022-03-31', 6000, 1300);
 
 
 INSERT INTO invoices (customer_id, sales_id, total_amount) VALUES (2, 1, 189000);
@@ -95,15 +95,22 @@ INSERT INTO invoices (customer_id, sales_id, total_amount) VALUES (2, 1, 189000)
 INSERT INTO reports (from_date, to_date, total_sales, total_cost, gross_profit
 ) VALUES ('2021-03-15', '2022-02-14', 300000, 120000, 180000);
 
-INSERT INTO expenses (management_cost) VALUES (5000);
 
+-- select *, service_buying_price + service_selling_price as total from sales 
+-- where sales_date >= '2021-01-01'
+-- and sales_date <= '2021-12-31';
 
---select *, service_buying_price + service_selling_price as total from sales 
---where sales_date >= '2021-01-01'
---and sales_date <= '2021-12-31';
+-- SELECT SUM(COALESCE(salary,0) + COALESCE(management_cost,0)) 
+-- FROM expenses
+-- where from_date >= '2021-01-01'
+-- and to_date <= '2021-12-31';
 
-SELECT SUM(COALESCE(salary,0) + COALESCE(management_cost,0)) 
-FROM expenses
-where from_date >= '2021-01-01'
-and to_date <= '2021-12-31';
+-- SELECT SUM(management_cost) from expenses
+-- SELECT SUM(salary + management_cost) from expenses
 
+-- select * from sales
+
+-- SELECT SUM(salary + management_cost) from expenses
+
+-- SELECT SUM(salary + management_cost) from expenses
+--         WHERE from_date >= '2021-01-01' AND to_date <= '2021-12-31';

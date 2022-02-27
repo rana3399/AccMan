@@ -23,39 +23,47 @@ const getExpenses = async (req, res) => {
     } catch (error) {
         console.error(error)
         res.status("404").send(error)
-
     }
 }
 
+// create a expenses reports with or without date
 const getTotalExpensesByDate = async (request, response) => {
     try {
         const { from_date, to_date } = request.body;
-        //console.log(from_date, to_date);
 
-        const expensesQueryByDate = await pool.query(`SELECT SUM(COALESCE(salary,0) + COALESCE(management_cost,0)) 
+        const expensesQueryByDate = `SELECT SUM(COALESCE(salary,0) + COALESCE(management_cost,0)) 
         FROM expenses
         where from_date >= $1
-        and to_date <= $2`, [from_date, to_date]);
+        and to_date <= $2`
+        const expensesQueryByDateResult = await pool.query(expensesQueryByDate, [from_date, to_date]);
 
-        console.log("expensesQueryByDate", expensesQueryByDate.rows);
+        if (from_date > to_date) {
+            return response
+                .status(400)
+                .json({
+                    status: `Please check your dates.`,
+                })
+        }
 
         if (from_date && to_date) {
             return response
                 .status(200)
                 .json({
-                    status: `expenses report from ${from_date} to ${to_date} is created.`,
-                    totalExpenses: `Euro: ${expensesQueryByDate.rows[0].sum}`
+                    status: `Expenses report from ${from_date} to ${to_date} is created.`,
+                    totalExpenses: `Euro: ${expensesQueryByDateResult.rows[0].sum}`
+                })
+        } else {
+            const randomExpensesQuery = `SELECT SUM(COALESCE(salary,0) + COALESCE(management_cost,0))
+            FROM expenses`
+            const expensesQuery = await pool.query(randomExpensesQuery);
+
+            return response
+                .status(200)
+                .json({
+                    status: `A total expenses report is created.`,
+                    totalSale: `Euro: ${expensesQuery.rows[0].sum}`
                 })
         }
-        //else {
-        //     return response
-        //         .status(200)
-        //         .json({
-        //             status: `A total sales report is created.`,
-        //             totalSale: `Euro: ${saleReportResult.rows[0].sum}`
-        //         })
-        // }
-
     } catch (error) {
         console.error(error.message);
         response.status(404).send({ error: error.message });
