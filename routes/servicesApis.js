@@ -6,6 +6,7 @@ const pool = new Pool(secrets);
 
 const router = require('express').Router();
 
+// show all services
 const getServices = async (req, res) => {
     try {
         const result = await pool.query("select * from services")
@@ -44,8 +45,7 @@ const getServicesByName = async (req, res) => {
 // create a new service
 const addNewService = async (request, response) => {
     try {
-        const newService = request.body;
-        const { service_name, descriptions, service_buying_price, service_selling_price } = newService;
+        const { service_name, descriptions, service_buying_price, service_selling_price } = request.body;
 
         const result = await pool.query(
             `INSERT INTO services (service_name, descriptions, service_buying_price, service_selling_price)
@@ -76,8 +76,51 @@ const addNewService = async (request, response) => {
     }
 }
 
+// modify an existing services
+const modifyService = async (request, response) => {
+    try {
+        const reqServiceId = parseInt(request.params.id);
+        const { service_name, descriptions, service_buying_price, service_selling_price } = request.body;
+
+        const modifyQueryResult = await pool.query(
+            `UPDATE services SET 
+            service_name = $1, 
+            descriptions = $2, 
+            service_buying_price = $3, 
+            service_selling_price = $4
+            where id = $5 returning id`,
+            [
+                service_name,
+                descriptions,
+                service_buying_price,
+                service_selling_price,
+                reqServiceId
+            ]);
+
+        if (service_name ||
+            descriptions ||
+            service_buying_price ||
+            service_selling_price) {
+
+            return response
+                .status(201)
+                .send(`Service with id: ${modifyQueryResult.rows[0].id} and has been modified.`)
+
+        } else {
+            return response
+                .status(404)
+                .send("There is an error, please try again.")
+        }
+
+    } catch (error) {
+        console.error(error.message);
+        response.status(404).send({ error: error.message });
+    }
+}
+
 router.get("/", getServices);
 router.get("/search", getServicesByName);
 router.post("/", addNewService);
+router.put("/:id", modifyService);
 
 module.exports = router;

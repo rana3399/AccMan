@@ -88,3 +88,13 @@ INSERT INTO reports (from_date, to_date, total_sales, total_cost, gross_profit
 
 INSERT INTO expenses (management_cost) VALUES (5000);
 
+
+--select *, service_buying_price + service_selling_price as total from sales 
+--where sales_date >= '2021-01-01'
+--and sales_date <= '2021-12-31';
+
+-- SELECT SUM(COALESCE(service_buying_price,0) + COALESCE(service_selling_price,0)) 
+-- FROM sales 
+-- where sales_date >= '2021-01-01'
+-- and sales_date <= '2021-12-31';
+
