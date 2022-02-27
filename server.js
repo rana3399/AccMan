@@ -20,9 +20,11 @@ app.use('/customers', customersRouter);
 const servicesRouter = require("./routes/servicesApis");
 app.use('/services', servicesRouter);
 
-
 const salesRouter = require("./routes/salesApis");
 app.use('/sales', salesRouter);
+
+const expensesRouter = require("./routes/expensesApis");
+app.use('/expenses', expensesRouter);
 
 const invoicesRouter = require("./routes/invoicesApis");
 app.use("/invoices", invoicesRouter);

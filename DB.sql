@@ -39,9 +39,14 @@ CREATE TABLE sales (
   total_price INT not null
 );
 
+
 CREATE TABLE expenses (
+  from_date      date NOT NULL,
+  to_date      date NOT NULL,
+  salary       INT not null,
   management_cost INT not null
 );
+
 
 CREATE TABLE invoices (
   id        SERIAL PRIMARY KEY,
@@ -80,6 +85,10 @@ INSERT INTO sales (sales_date, customer_id, service_id, service_buying_price, se
 INSERT INTO sales (sales_date , customer_id, service_id, service_buying_price, service_selling_price, total_price) VALUES ('2022-03-14',3, 1, 2000, 80000, 80000);
 INSERT INTO sales (sales_date, customer_id, service_id, service_buying_price, service_selling_price, total_price) VALUES ('2022-02-16', 2, 2, 35000, 40000, 40000);
 
+INSERT INTO expenses (from_date, to_date, salary, management_cost) VALUES ('2021-01-01', '2021-01-31', 32000, 5000);
+INSERT INTO expenses (from_date, to_date, salary, management_cost) VALUES ('2021-02-01', '2021-02-28', 55000, 4000);
+INSERT INTO expenses (from_date, to_date, salary, management_cost) VALUES ('2022-03-01', '2022-03-31', 12000, 8000);
+
 
 INSERT INTO invoices (customer_id, sales_id, total_amount) VALUES (2, 1, 189000);
 
@@ -93,8 +102,8 @@ INSERT INTO expenses (management_cost) VALUES (5000);
 --where sales_date >= '2021-01-01'
 --and sales_date <= '2021-12-31';
 
--- SELECT SUM(COALESCE(service_buying_price,0) + COALESCE(service_selling_price,0)) 
--- FROM sales 
--- where sales_date >= '2021-01-01'
--- and sales_date <= '2021-12-31';
+SELECT SUM(COALESCE(salary,0) + COALESCE(management_cost,0)) 
+FROM expenses
+where from_date >= '2021-01-01'
+and to_date <= '2021-12-31';
 
