@@ -48,13 +48,29 @@ CREATE TABLE expenses (
 );
 
 
+-- CREATE TABLE invoices (
+--   id        SERIAL PRIMARY KEY,
+--   invoice_date      TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+--   customer_id INT REFERENCES customers(id) not null,
+--   sales_id INT sales(id) not null,
+--   total_amount INT not null
+-- );
+
 CREATE TABLE invoices (
   id        SERIAL PRIMARY KEY,
   invoice_date      TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+  sales_date  date not null
   customer_id INT REFERENCES customers(id) not null,
+  customer_name VARCHAR (100) not null,
+  service_name  VARCHAR (300) not null,
   sales_id INT REFERENCES sales(id) not null,
   total_amount INT not null
 );
+select s.sales_date, cus.customer_name, srv.service_name, s.id as SalesId, s.total_price from sales s 
+INNER JOIN customers cus on s.customer_id = cus.id
+INNER JOIN services srv on s.service_id = srv.id 
+where s.id = 3
+
 
 CREATE TABLE reports (
   id        SERIAL PRIMARY KEY,
@@ -90,10 +106,18 @@ INSERT INTO expenses (from_date, to_date, salary, management_cost) VALUES ('2021
 INSERT INTO expenses (from_date, to_date, salary, management_cost) VALUES ('2022-03-01', '2022-03-31', 6000, 1300);
 
 
-INSERT INTO invoices (customer_id, sales_id, total_amount) VALUES (2, 1, 189000);
+INSERT INTO invoices (customer_id, sales_id, total_amount) VALUES (2, 1, 15000);
 
 INSERT INTO reports (from_date, to_date, total_sales, total_cost, gross_profit
 ) VALUES ('2021-03-15', '2022-02-14', 300000, 120000, 180000);
+
+
+select sales_date, service_selling_price, total_price from sales where id = 1
+
+select s.sales_date, cus.customer_name, srv.service_name, s.id as SalesId, s.total_price from sales s 
+INNER JOIN customers cus on s.customer_id = cus.id
+INNER JOIN services srv on s.service_id = srv.id 
+where s.id = 3
 
 
 -- select *, service_buying_price + service_selling_price as total from sales 

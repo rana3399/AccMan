@@ -27,7 +27,7 @@ const getExpenses = async (req, res) => {
 }
 
 // create a expenses reports with or without date
-const getTotalExpensesByDate = async (request, response) => {
+const createTotalExpensesByDate = async (request, response) => {
     try {
         const { from_date, to_date } = request.body;
 
@@ -47,7 +47,7 @@ const getTotalExpensesByDate = async (request, response) => {
 
         if (from_date && to_date) {
             return response
-                .status(200)
+                .status(201)
                 .json({
                     status: `Expenses report from ${from_date} to ${to_date} is created.`,
                     totalExpenses: `Euro: ${expensesQueryByDateResult.rows[0].sum}`
@@ -58,7 +58,7 @@ const getTotalExpensesByDate = async (request, response) => {
             const expensesQuery = await pool.query(randomExpensesQuery);
 
             return response
-                .status(200)
+                .status(201)
                 .json({
                     status: `A total expenses report is created.`,
                     totalSale: `Euro: ${expensesQuery.rows[0].sum}`
@@ -73,7 +73,7 @@ const getTotalExpensesByDate = async (request, response) => {
 
 //router.post("/", addNewInvoice)
 router.get("/", getExpenses)
-router.post("/total-expenses", getTotalExpensesByDate)
+router.post("/total-expenses", createTotalExpensesByDate)
 
 
 

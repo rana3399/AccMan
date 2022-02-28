@@ -101,7 +101,7 @@ const addNewCustomers = async (request, response) => {
                     .json({ status: "There is an error, please try again." })
             } else {
                 return response
-                    .status(200)
+                    .status(201)
                     .json({
                         status: "New customer is created.",
                         NewCustomerId: result.rows[0].id
